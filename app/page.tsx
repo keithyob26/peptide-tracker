@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
-import DisclaimerBanner from "@/components/DisclaimerBanner";
 import Link from "next/link";
+import DisclaimerBanner from "@/components/DisclaimerBanner";
 
 interface Cycle {
   id: string;
@@ -20,14 +20,118 @@ interface FeelScore {
   date: string;
 }
 
+interface WeightEntry {
+  date: string;
+  weight: number;
+  unit: string;
+}
+
+interface LogEntry {
+  id: string;
+  compound: string;
+  dose: string;
+  frequency: string;
+  site: string;
+  date: string;
+  time: string;
+}
+
+function Ring({
+  value,
+  max = 10,
+  size = 72,
+  stroke = 7,
+  color,
+  label,
+  sub,
+}: {
+  value: number;
+  max?: number;
+  size?: number;
+  stroke?: number;
+  color: string;
+  label: string;
+  sub?: string;
+}) {
+  const r = (size - stroke) / 2;
+  const circ = 2 * Math.PI * r;
+  const pct = Math.min(1, Math.max(0, value / max));
+  const dash = circ;
+  const offset = circ * (1 - pct);
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 4 }}>
+      <div style={{ position: "relative", width: size, height: size }}>
+        <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={stroke} />
+          <circle
+            cx={size / 2} cy={size / 2} r={r} fill="none"
+            stroke={color} strokeWidth={stroke}
+            strokeLinecap="round"
+            strokeDasharray={dash}
+            strokeDashoffset={offset}
+            style={{ transition: "stroke-dashoffset 0.6s ease" }}
+          />
+        </svg>
+        <div style={{
+          position: "absolute", inset: 0, display: "flex", flexDirection: "column",
+          alignItems: "center", justifyContent: "center", gap: 0
+        }}>
+          <span style={{ fontSize: 16, fontWeight: 800, color: "#F1F5F9", lineHeight: 1 }}>{value}</span>
+          {sub && <span style={{ fontSize: 9, color: "#64748B", lineHeight: 1.2 }}>{sub}</span>}
+        </div>
+      </div>
+      <span style={{ fontSize: 11, color: "#64748B", fontWeight: 500, textAlign: "center" }}>{label}</span>
+    </div>
+  );
+}
+
+function BigRing({ value, max = 10, size = 130, stroke = 11, color }: {
+  value: number | null; max?: number; size?: number; stroke?: number; color: string;
+}) {
+  const r = (size - stroke) / 2;
+  const circ = 2 * Math.PI * r;
+  const pct = value !== null ? Math.min(1, Math.max(0, value / max)) : 0;
+  const offset = circ * (1 - pct);
+  return (
+    <div style={{ position: "relative", width: size, height: size }}>
+      <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
+        <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke="rgba(255,255,255,0.06)" strokeWidth={stroke} />
+        {value !== null && (
+          <circle
+            cx={size / 2} cy={size / 2} r={r} fill="none"
+            stroke={color} strokeWidth={stroke} strokeLinecap="round"
+            strokeDasharray={circ} strokeDashoffset={offset}
+            style={{ transition: "stroke-dashoffset 0.8s ease" }}
+          />
+        )}
+      </svg>
+      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+        {value !== null ? (
+          <>
+            <span style={{ fontSize: 30, fontWeight: 900, color: "#F1F5F9", lineHeight: 1 }}>{value}</span>
+            <span style={{ fontSize: 12, color: "#64748B" }}>/10</span>
+          </>
+        ) : (
+          <span style={{ fontSize: 28 }}>—</span>
+        )}
+      </div>
+    </div>
+  );
+}
+
 export default function HomePage() {
   const [activeCycle, setActiveCycle] = useState<Cycle | null>(null);
   const [todayScore, setTodayScore] = useState<FeelScore | null>(null);
   const [cycleDay, setCycleDay] = useState(0);
   const [totalDays, setTotalDays] = useState(0);
+  const [todayLogs, setTodayLogs] = useState<LogEntry[]>([]);
+  const [latestWeight, setLatestWeight] = useState<WeightEntry | null>(null);
+  const [streak, setStreak] = useState(0);
 
   useEffect(() => {
-    // Load active cycle
+    const today = new Date().toISOString().split("T")[0];
+
     const cyclesRaw = localStorage.getItem("pt_cycles");
     if (cyclesRaw) {
       const cycles: Cycle[] = JSON.parse(cyclesRaw);
@@ -37,19 +141,33 @@ export default function HomePage() {
         const start = new Date(active.startDate);
         const end = new Date(active.endDate);
         const now = new Date();
-        const dayNum = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-        const total = Math.floor((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-        setCycleDay(Math.max(1, dayNum));
-        setTotalDays(Math.max(1, total));
+        setCycleDay(Math.max(1, Math.floor((now.getTime() - start.getTime()) / 86400000) + 1));
+        setTotalDays(Math.max(1, Math.floor((end.getTime() - start.getTime()) / 86400000) + 1));
       }
     }
 
-    // Load today's feel score
-    const today = new Date().toISOString().split("T")[0];
     const scoreRaw = localStorage.getItem(`pt_scores_${today}`);
-    if (scoreRaw) {
-      setTodayScore(JSON.parse(scoreRaw));
+    if (scoreRaw) setTodayScore(JSON.parse(scoreRaw));
+
+    const logsRaw = localStorage.getItem("pt_logs");
+    if (logsRaw) {
+      const all: LogEntry[] = JSON.parse(logsRaw);
+      setTodayLogs(all.filter((l) => l.date === today));
     }
+
+    const weightsRaw = localStorage.getItem("pt_weights");
+    if (weightsRaw) {
+      const ws: WeightEntry[] = JSON.parse(weightsRaw);
+      if (ws.length) setLatestWeight(ws[ws.length - 1]);
+    }
+
+    let s = 0;
+    for (let i = 0; i < 30; i++) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const k = `pt_scores_${d.toISOString().split("T")[0]}`;
+      if (localStorage.getItem(k)) s++; else break;
+    }
+    setStreak(s);
   }, []);
 
   const progress = totalDays > 0 ? Math.min(100, (cycleDay / totalDays) * 100) : 0;
@@ -57,133 +175,167 @@ export default function HomePage() {
     ? Math.round((todayScore.energy + todayScore.sleep + todayScore.mood + todayScore.recovery) / 4 * 10) / 10
     : null;
 
+  const scoreColor = (v: number) => v >= 7 ? "#14B8A6" : v >= 4 ? "#FBBF24" : "#EF4444";
+  const avgColor = avgScore ? scoreColor(avgScore) : "#14B8A6";
+
   return (
     <div className="page">
       {/* Header */}
-      <div style={{ marginBottom: 24 }}>
-        <div style={{ fontSize: 13, color: "#14B8A6", fontWeight: 600, marginBottom: 4 }}>
-          PEPTIDE TRACKER
-        </div>
-        <h1 style={{ fontSize: 26, fontWeight: 800, color: "#F1F5F9", margin: 0 }}>
-          Dashboard
-        </h1>
-        <div style={{ fontSize: 14, color: "#64748B", marginTop: 4 }}>
-          {new Date().toLocaleDateString("en-IE", { weekday: "long", day: "numeric", month: "long" })}
-        </div>
-      </div>
-
-      {/* Active Cycle Card */}
-      {activeCycle ? (
-        <div className="card" style={{ marginBottom: 16 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
-            <div style={{ fontSize: 13, color: "#64748B", fontWeight: 500 }}>ACTIVE CYCLE</div>
-            <span className="badge badge-teal">Live</span>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
+        <div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: "#F1F5F9" }}>
+            {new Date().getHours() < 12 ? "Good morning" : new Date().getHours() < 18 ? "Good afternoon" : "Good evening"}
           </div>
-          <div style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>{activeCycle.name}</div>
-          <div style={{ fontSize: 14, color: "#94A3B8", marginBottom: 12 }}>
-            Day {cycleDay} of {totalDays}
-          </div>
-          {/* Progress bar */}
-          <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 4, height: 8, marginBottom: 12 }}>
-            <div style={{ width: `${progress}%`, height: "100%", background: "#14B8A6", borderRadius: 4, transition: "width 0.5s" }} />
-          </div>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
-            {activeCycle.compounds.map((c) => (
-              <span key={c} style={{ fontSize: 12, background: "rgba(20,184,166,0.1)", color: "#14B8A6", padding: "3px 10px", borderRadius: 20, fontWeight: 500 }}>
-                {c}
-              </span>
-            ))}
+          <div style={{ fontSize: 13, color: "#64748B", marginTop: 2 }}>
+            {new Date().toLocaleDateString("en-IE", { weekday: "long", day: "numeric", month: "long" })}
           </div>
         </div>
-      ) : (
-        <div className="card" style={{ marginBottom: 16, textAlign: "center", padding: "32px 16px" }}>
-          <div style={{ fontSize: 40, marginBottom: 12 }}>💊</div>
-          <div style={{ fontSize: 18, fontWeight: 700, marginBottom: 8 }}>No Active Cycle</div>
-          <div style={{ fontSize: 14, color: "#64748B", marginBottom: 16 }}>
-            Start tracking your peptide or HRT cycle to see your progress here.
-          </div>
-          <Link href="/tracker" style={{ textDecoration: "none" }}>
-            <button className="btn-primary">Create Your First Cycle</button>
-          </Link>
-        </div>
-      )}
-
-      {/* Today's Feel Score */}
-      <div className="card" style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 13, color: "#64748B", fontWeight: 500, marginBottom: 12 }}>TODAY&apos;S FEEL SCORE</div>
-        {todayScore ? (
-          <div>
-            <div style={{ fontSize: 36, fontWeight: 800, color: "#14B8A6", marginBottom: 8 }}>{avgScore}/10</div>
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              {[
-                { label: "Energy", value: todayScore.energy },
-                { label: "Sleep", value: todayScore.sleep },
-                { label: "Mood", value: todayScore.mood },
-                { label: "Recovery", value: todayScore.recovery },
-              ].map((item) => (
-                <div key={item.label} style={{ background: "rgba(255,255,255,0.03)", borderRadius: 8, padding: "10px 12px" }}>
-                  <div style={{ fontSize: 12, color: "#64748B", marginBottom: 2 }}>{item.label}</div>
-                  <div style={{ fontSize: 18, fontWeight: 700, color: item.value >= 7 ? "#14B8A6" : item.value >= 4 ? "#FBBF24" : "#EF4444" }}>
-                    {item.value}/10
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        ) : (
-          <div style={{ textAlign: "center", padding: "16px 0" }}>
-            <div style={{ fontSize: 14, color: "#64748B", marginBottom: 12 }}>No scores logged yet today</div>
-            <Link href="/log" style={{ textDecoration: "none" }}>
-              <button className="btn-primary">Log Today&apos;s Scores</button>
-            </Link>
+        {streak > 0 && (
+          <div style={{ background: "rgba(251,191,36,0.1)", border: "1px solid rgba(251,191,36,0.25)", borderRadius: 20, padding: "6px 12px", display: "flex", alignItems: "center", gap: 4 }}>
+            <span style={{ fontSize: 16 }}>🔥</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: "#FBBF24" }}>{streak}d</span>
           </div>
         )}
       </div>
 
-      {/* Quick Actions */}
-      <div style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 13, color: "#64748B", fontWeight: 500, marginBottom: 12 }}>QUICK ACTIONS</div>
-        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-          {[
-            { label: "Log Today", emoji: "📝", href: "/log" },
-            { label: "View Progress", emoji: "📊", href: "/tracker" },
-            { label: "Calculator", emoji: "🧮", href: "/calculator" },
-            { label: "Progress Photos", emoji: "📷", href: "/photos" },
-          ].map((action) => (
-            <Link key={action.label} href={action.href} style={{ textDecoration: "none" }}>
-              <div className="card" style={{ textAlign: "center", padding: "20px 12px", cursor: "pointer", transition: "border-color 0.2s", borderColor: "rgba(20,184,166,0.15)" }}>
-                <div style={{ fontSize: 28, marginBottom: 6 }}>{action.emoji}</div>
-                <div style={{ fontSize: 14, fontWeight: 600, color: "#F1F5F9" }}>{action.label}</div>
+      {/* Feel Score Card — MFP style */}
+      <div className="card" style={{ marginBottom: 14 }}>
+        <div style={{ fontSize: 12, color: "#64748B", fontWeight: 600, letterSpacing: "0.06em", marginBottom: 14 }}>TODAY&apos;S FEEL SCORE</div>
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <BigRing value={avgScore} color={avgColor} />
+          <div style={{ flex: 1 }}>
+            {todayScore ? (
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                <Ring value={todayScore.energy} color={scoreColor(todayScore.energy)} label="Energy" sub="⚡" />
+                <Ring value={todayScore.sleep} color={scoreColor(todayScore.sleep)} label="Sleep" sub="😴" />
+                <Ring value={todayScore.mood} color={scoreColor(todayScore.mood)} label="Mood" sub="😊" />
+                <Ring value={todayScore.recovery} color={scoreColor(todayScore.recovery)} label="Recovery" sub="💪" />
               </div>
-            </Link>
-          ))}
+            ) : (
+              <div style={{ textAlign: "center" }}>
+                <div style={{ fontSize: 13, color: "#64748B", marginBottom: 10 }}>Not logged today</div>
+                <Link href="/log" style={{ textDecoration: "none" }}>
+                  <button className="btn-primary" style={{ fontSize: 14, padding: "10px 16px" }}>Log Now</button>
+                </Link>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
-      {/* Brand Links */}
-      <div className="card" style={{ marginBottom: 16 }}>
-        <div style={{ fontSize: 13, color: "#64748B", fontWeight: 500, marginBottom: 12 }}>POWERED BY</div>
-        <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-          <a href="https://irishpeptides.ie" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0" }}>
-              <div style={{ width: 36, height: 36, background: "rgba(20,184,166,0.15)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>🌿</div>
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "#14B8A6" }}>irishpeptides.ie</div>
-                <div style={{ fontSize: 12, color: "#64748B" }}>Free research tools &amp; guides</div>
+      {/* Active Cycle */}
+      {activeCycle ? (
+        <div className="card" style={{ marginBottom: 14 }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
+            <div style={{ fontSize: 12, color: "#64748B", fontWeight: 600, letterSpacing: "0.06em" }}>ACTIVE CYCLE</div>
+            <span className="badge badge-teal">Day {cycleDay}/{totalDays}</span>
+          </div>
+          <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 8 }}>{activeCycle.name}</div>
+          <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 6, height: 6, marginBottom: 10 }}>
+            <div style={{ width: `${progress}%`, height: "100%", background: "linear-gradient(90deg,#14B8A6,#0EA5E9)", borderRadius: 6, transition: "width 0.5s" }} />
+          </div>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
+            {activeCycle.compounds.map((c) => (
+              <span key={c} style={{ fontSize: 11, background: "rgba(20,184,166,0.1)", color: "#14B8A6", padding: "3px 9px", borderRadius: 20, fontWeight: 500 }}>{c}</span>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="card" style={{ marginBottom: 14, textAlign: "center", padding: "24px 16px" }}>
+          <div style={{ fontSize: 32, marginBottom: 8 }}>💊</div>
+          <div style={{ fontSize: 15, fontWeight: 700, marginBottom: 6 }}>No Active Cycle</div>
+          <div style={{ fontSize: 13, color: "#64748B", marginBottom: 14 }}>Start tracking to see cycle progress here.</div>
+          <Link href="/tracker" style={{ textDecoration: "none" }}>
+            <button className="btn-primary" style={{ fontSize: 14, padding: "10px 16px" }}>Start a Cycle</button>
+          </Link>
+        </div>
+      )}
+
+      {/* Today's Diary */}
+      <div className="card" style={{ marginBottom: 14 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 12 }}>
+          <div style={{ fontSize: 12, color: "#64748B", fontWeight: 600, letterSpacing: "0.06em" }}>TODAY&apos;S DIARY</div>
+          <Link href="/log" style={{ textDecoration: "none", fontSize: 13, color: "#14B8A6", fontWeight: 600 }}>+ Add</Link>
+        </div>
+        {todayLogs.length > 0 ? (
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            {todayLogs.map((l, i) => (
+              <div key={l.id} style={{
+                display: "flex", alignItems: "center", gap: 10, padding: "9px 0",
+                borderBottom: i < todayLogs.length - 1 ? "1px solid rgba(255,255,255,0.04)" : "none"
+              }}>
+                <div style={{ width: 32, height: 32, background: "rgba(20,184,166,0.1)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 15, flexShrink: 0 }}>💊</div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "#F1F5F9", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{l.compound}</div>
+                  <div style={{ fontSize: 12, color: "#64748B" }}>{l.dose} · {l.frequency}</div>
+                </div>
+                <div style={{ fontSize: 12, color: "#374151", flexShrink: 0 }}>{l.time}</div>
               </div>
-            </div>
-          </a>
-          <a href="https://instagram.com/irishwellnessresearch" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 0" }}>
-              <div style={{ width: 36, height: 36, background: "rgba(168,85,247,0.15)", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18 }}>📱</div>
-              <div>
-                <div style={{ fontSize: 15, fontWeight: 600, color: "#C084FC" }}>@irishwellnessresearch</div>
-                <div style={{ fontSize: 12, color: "#64748B" }}>Follow on Instagram</div>
+            ))}
+          </div>
+        ) : (
+          <div style={{ textAlign: "center", padding: "14px 0", color: "#64748B", fontSize: 13 }}>
+            Nothing logged today yet
+          </div>
+        )}
+      </div>
+
+      {/* Weight Check-in */}
+      <div className="card" style={{ marginBottom: 14 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div>
+            <div style={{ fontSize: 12, color: "#64748B", fontWeight: 600, letterSpacing: "0.06em", marginBottom: 3 }}>WEIGHT</div>
+            {latestWeight ? (
+              <div style={{ fontSize: 22, fontWeight: 800, color: "#F1F5F9" }}>
+                {latestWeight.weight} <span style={{ fontSize: 14, color: "#64748B", fontWeight: 500 }}>{latestWeight.unit}</span>
               </div>
-            </div>
-          </a>
+            ) : (
+              <div style={{ fontSize: 14, color: "#64748B" }}>Not logged yet</div>
+            )}
+            {latestWeight && (
+              <div style={{ fontSize: 11, color: "#64748B", marginTop: 1 }}>
+                {new Date(latestWeight.date).toLocaleDateString("en-IE", { day: "numeric", month: "short" })}
+              </div>
+            )}
+          </div>
+          <Link href="/log?tab=weight" style={{ textDecoration: "none" }}>
+            <button style={{
+              background: "rgba(20,184,166,0.1)", border: "1px solid rgba(20,184,166,0.25)",
+              color: "#14B8A6", padding: "10px 16px", borderRadius: 8, fontSize: 13,
+              fontWeight: 600, cursor: "pointer", minHeight: 40
+            }}>Log Weight</button>
+          </Link>
         </div>
       </div>
+
+      {/* Quick Actions — 2x2 grid like MFP */}
+      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 14 }}>
+        {[
+          { label: "Log Today", emoji: "📝", href: "/log", color: "rgba(20,184,166,0.08)", border: "rgba(20,184,166,0.2)" },
+          { label: "Cycle Tracker", emoji: "📊", href: "/tracker", color: "rgba(14,165,233,0.08)", border: "rgba(14,165,233,0.2)" },
+          { label: "Calculator", emoji: "🧮", href: "/calculator", color: "rgba(168,85,247,0.08)", border: "rgba(168,85,247,0.2)" },
+          { label: "Progress Photos", emoji: "📷", href: "/photos", color: "rgba(251,191,36,0.08)", border: "rgba(251,191,36,0.2)" },
+        ].map((a) => (
+          <Link key={a.label} href={a.href} style={{ textDecoration: "none" }}>
+            <div className="card" style={{ textAlign: "center", padding: "18px 10px", cursor: "pointer", background: a.color, borderColor: a.border }}>
+              <div style={{ fontSize: 26, marginBottom: 5 }}>{a.emoji}</div>
+              <div style={{ fontSize: 13, fontWeight: 600, color: "#F1F5F9" }}>{a.label}</div>
+            </div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Send to AI promo */}
+      <Link href="/more" style={{ textDecoration: "none" }}>
+        <div className="card" style={{ marginBottom: 14, background: "rgba(16,163,127,0.06)", borderColor: "rgba(16,163,127,0.2)", display: "flex", alignItems: "center", gap: 12 }}>
+          <div style={{ fontSize: 28 }}>🤖</div>
+          <div style={{ flex: 1 }}>
+            <div style={{ fontSize: 14, fontWeight: 700, color: "#F1F5F9" }}>Sync with Your AI</div>
+            <div style={{ fontSize: 12, color: "#64748B", marginTop: 2 }}>Copy cycle data → paste into ChatGPT, Claude, Gemini</div>
+          </div>
+          <div style={{ color: "#374151", fontSize: 18 }}>›</div>
+        </div>
+      </Link>
 
       <DisclaimerBanner />
     </div>

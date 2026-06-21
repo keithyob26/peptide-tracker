@@ -100,7 +100,17 @@ export default function MorePage() {
         lines.push(`${s.date}: Energy ${s.energy}/10, Sleep ${s.sleep}/10, Mood ${s.mood}/10, Recovery ${s.recovery}/10`);
       }
     }
-    lines.push("\nPlease analyse this cycle and share research insights. Frame everything as research context only.");
+    const weightsRaw = localStorage.getItem("pt_weights");
+    if (weightsRaw) {
+      const ws = JSON.parse(weightsRaw).slice(-7);
+      if (ws.length) {
+        lines.push("\nWeight log (last 7 entries):");
+        ws.reverse().forEach((w: {date: string; weight: number; unit: string}) => {
+          lines.push(`${w.date}: ${w.weight}${w.unit}`);
+        });
+      }
+    }
+    lines.push("\nPlease analyse this data and share research insights. Frame everything as research context only.");
     return lines.join("\n");
   };
 

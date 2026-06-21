@@ -1,6 +1,6 @@
 export interface Compound {
   name: string;
-  category: "peptide" | "mens_hrt" | "womens_hrt";
+  category: "peptide" | "mens_hrt" | "womens_hrt" | "sarm";
   typicalCycleDays: number;
   researchContext: string;
   commonDoses: string[];
@@ -17,12 +17,52 @@ export const compounds: Compound[] = [
   { name: "Semax", category: "peptide", typicalCycleDays: 30, researchContext: "Nootropic peptide studied for cognitive enhancement and neuroprotection.", commonDoses: ["300mcg", "600mcg"] },
   { name: "Selank", category: "peptide", typicalCycleDays: 30, researchContext: "Anxiolytic peptide studied for stress reduction and mood regulation.", commonDoses: ["250mcg", "500mcg"] },
   { name: "Epithalon", category: "peptide", typicalCycleDays: 20, researchContext: "Tetrapeptide studied for telomere lengthening and longevity.", commonDoses: ["5mg", "10mg"] },
-  { name: "PT-141", category: "peptide", typicalCycleDays: 30, researchContext: "Melanocortin peptide studied for sexual function and libido.", commonDoses: ["1mg", "2mg"] },
   { name: "Retatrutide", category: "peptide", typicalCycleDays: 90, researchContext: "Triple agonist (GLP-1/GIP/glucagon) studied for metabolic and weight outcomes.", commonDoses: ["2mg", "4mg", "8mg"] },
   { name: "Tirzepatide", category: "peptide", typicalCycleDays: 90, researchContext: "Dual GLP-1/GIP agonist studied for type 2 diabetes and weight management.", commonDoses: ["5mg", "10mg", "15mg"] },
   { name: "Semaglutide", category: "peptide", typicalCycleDays: 90, researchContext: "GLP-1 receptor agonist studied for blood sugar control and weight reduction.", commonDoses: ["0.25mg", "0.5mg", "1mg"] },
   { name: "MOTS-c", category: "peptide", typicalCycleDays: 60, researchContext: "Mitochondrial peptide studied for metabolic regulation and insulin sensitivity.", commonDoses: ["5mg", "10mg"] },
   { name: "IGF-1 LR3", category: "peptide", typicalCycleDays: 30, researchContext: "Long-acting IGF-1 analogue studied for muscle growth and repair.", commonDoses: ["50mcg", "100mcg"] },
+  { name: "GHRP-2", category: "peptide", typicalCycleDays: 90, researchContext: "Growth hormone releasing peptide-2 studied for GH secretion and appetite stimulation.", commonDoses: ["100mcg", "200mcg", "300mcg"] },
+  { name: "Tesamorelin", category: "peptide", typicalCycleDays: 90, researchContext: "GHRH analogue studied for visceral fat reduction and GH secretion.", commonDoses: ["1mg", "2mg"] },
+  { name: "Sermorelin", category: "peptide", typicalCycleDays: 90, researchContext: "GHRH analogue studied for natural growth hormone stimulation and anti-aging.", commonDoses: ["200mcg", "300mcg", "500mcg"] },
+  { name: "Hexarelin", category: "peptide", typicalCycleDays: 60, researchContext: "Potent GHRP studied for GH secretion and cardiac protection.", commonDoses: ["100mcg", "200mcg"] },
+  { name: "GRF (Mod GRF 1-29)", category: "peptide", typicalCycleDays: 90, researchContext: "Modified GHRH fragment studied for sustained GH release with improved stability.", commonDoses: ["100mcg", "200mcg"] },
+  { name: "Gonadorelin", category: "peptide", typicalCycleDays: 90, researchContext: "GnRH analogue studied for LH/FSH stimulation and fertility support.", commonDoses: ["100mcg", "250mcg"] },
+  { name: "PT-141 (Bremelanotide)", category: "peptide", typicalCycleDays: 30, researchContext: "Melanocortin receptor agonist studied for sexual dysfunction and libido.", commonDoses: ["1mg", "2mg"] },
+  { name: "Thymosin Alpha-1", category: "peptide", typicalCycleDays: 30, researchContext: "Immune-modulating peptide studied for T-cell function and antiviral response.", commonDoses: ["1.6mg", "3.2mg"] },
+  { name: "Thymosin Beta-4 (TB-4)", category: "peptide", typicalCycleDays: 84, researchContext: "Actin-sequestering protein studied for tissue repair, inflammation, and wound healing.", commonDoses: ["2.5mg", "5mg"] },
+  { name: "KPV", category: "peptide", typicalCycleDays: 30, researchContext: "Alpha-MSH tripeptide fragment studied for anti-inflammatory and gut healing effects.", commonDoses: ["500mcg", "1mg"] },
+  { name: "Larazotide", category: "peptide", typicalCycleDays: 60, researchContext: "Tight junction regulator studied for intestinal permeability and coeliac disease.", commonDoses: ["0.5mg", "1mg"] },
+  { name: "Adipotide", category: "peptide", typicalCycleDays: 28, researchContext: "Proapoptotic peptide studied for targeted fat cell destruction and obesity.", commonDoses: ["100mcg", "250mcg"] },
+  { name: "Follistatin 344", category: "peptide", typicalCycleDays: 30, researchContext: "Myostatin inhibitor studied for muscle growth and fat reduction.", commonDoses: ["100mcg", "200mcg"] },
+  { name: "Pinealon", category: "peptide", typicalCycleDays: 20, researchContext: "Pineal gland tripeptide studied for neuroprotection and sleep regulation.", commonDoses: ["1mg", "2mg"] },
+  { name: "Oxytocin", category: "peptide", typicalCycleDays: 30, researchContext: "Neuropeptide studied for social bonding, stress reduction, and recovery.", commonDoses: ["10IU", "20IU"] },
+  { name: "DSIP", category: "peptide", typicalCycleDays: 14, researchContext: "Delta sleep-inducing peptide studied for sleep quality and stress resilience.", commonDoses: ["100mcg", "200mcg"] },
+  { name: "SS-31 (Elamipretide)", category: "peptide", typicalCycleDays: 30, researchContext: "Mitochondria-targeting peptide studied for energy production and cardioprotection.", commonDoses: ["1mg", "2mg"] },
+  { name: "Rapamycin", category: "peptide", typicalCycleDays: 365, researchContext: "mTOR inhibitor studied for longevity, autophagy, and immune modulation.", commonDoses: ["1mg", "2mg", "5mg"] },
+  { name: "Insulin (research)", category: "peptide", typicalCycleDays: 30, researchContext: "Anabolic hormone studied for nutrient partitioning and muscle recovery in research contexts.", commonDoses: ["2IU", "4IU"] },
+  { name: "Collagen Peptides", category: "peptide", typicalCycleDays: 90, researchContext: "Hydrolysed collagen studied for joint, skin, and connective tissue support.", commonDoses: ["5g", "10g", "15g"] },
+  { name: "Creatine Peptide", category: "peptide", typicalCycleDays: 90, researchContext: "Peptide-bonded creatine studied for improved absorption vs. monohydrate.", commonDoses: ["3g", "5g"] },
+  { name: "Abaloparatide", category: "peptide", typicalCycleDays: 90, researchContext: "PTHrP analogue studied for bone density and osteoporosis treatment.", commonDoses: ["80mcg"] },
+  { name: "Teriparatide", category: "peptide", typicalCycleDays: 730, researchContext: "PTH(1-34) analogue studied for bone formation and osteoporosis.", commonDoses: ["20mcg"] },
+  // SARMs
+  { name: "Ostarine (MK-2866)", category: "sarm", typicalCycleDays: 60, researchContext: "First-gen SARM studied for muscle preservation and bone density. Mildest profile.", commonDoses: ["10mg", "15mg", "25mg"] },
+  { name: "Ligandrol (LGD-4033)", category: "sarm", typicalCycleDays: 42, researchContext: "Potent SARM studied for lean muscle gain and strength. Significant testosterone suppression.", commonDoses: ["5mg", "10mg"] },
+  { name: "Andarine (S-4)", category: "sarm", typicalCycleDays: 56, researchContext: "SARM studied for fat loss and muscle hardening. Vision side effects at high dose.", commonDoses: ["25mg", "50mg"] },
+  { name: "S-23", category: "sarm", typicalCycleDays: 42, researchContext: "Highly potent SARM studied for muscle density and fat loss. Strong suppression.", commonDoses: ["10mg", "20mg"] },
+  { name: "S-40503", category: "sarm", typicalCycleDays: 42, researchContext: "Bone-selective SARM studied for osteoporosis with reduced androgenic activity.", commonDoses: ["3mg", "6mg"] },
+  { name: "Vosilasarm (RAD-140)", category: "sarm", typicalCycleDays: 56, researchContext: "Selective androgen receptor modulator studied for muscle gain and neuroprotection.", commonDoses: ["10mg", "15mg", "20mg"] },
+  { name: "YK-11", category: "sarm", typicalCycleDays: 42, researchContext: "Myostatin inhibitor and partial AR agonist studied for extreme muscle growth.", commonDoses: ["5mg", "10mg"] },
+  { name: "GSK-2881078", category: "sarm", typicalCycleDays: 42, researchContext: "Clinical-stage SARM studied for muscle wasting and cachexia treatment.", commonDoses: ["1mg", "2mg"] },
+  { name: "LGD-3303", category: "sarm", typicalCycleDays: 42, researchContext: "Orally active SARM studied for bone and muscle anabolic effects.", commonDoses: ["10mg", "20mg"] },
+  { name: "LGD-3033", category: "sarm", typicalCycleDays: 42, researchContext: "Partial AR agonist studied for dry muscle gains with minimal water retention.", commonDoses: ["10mg", "15mg"] },
+  { name: "TT-701", category: "sarm", typicalCycleDays: 42, researchContext: "Tissue-selective SARM studied for anabolic effects in muscle and bone.", commonDoses: ["10mg", "20mg"] },
+  { name: "RAD150 (TLB-150)", category: "sarm", typicalCycleDays: 56, researchContext: "Esterified RAD-140 analogue studied for longer half-life and sustained anabolic activity.", commonDoses: ["10mg", "20mg"] },
+  { name: "ACP-105", category: "sarm", typicalCycleDays: 42, researchContext: "Non-steroidal SARM studied for muscle and bone anabolism with CNS benefits.", commonDoses: ["5mg", "11mg"] },
+  { name: "MK-677 (Ibutamoren)", category: "sarm", typicalCycleDays: 90, researchContext: "GH secretagogue (non-SARM class but SARM-stack staple) studied for GH/IGF-1 elevation.", commonDoses: ["12.5mg", "25mg"] },
+  { name: "GW501516 (Cardarine)", category: "sarm", typicalCycleDays: 42, researchContext: "PPARδ agonist (not a SARM) studied for endurance and fat oxidation.", commonDoses: ["10mg", "20mg"] },
+  { name: "SR-9009 (Stenabolic)", category: "sarm", typicalCycleDays: 42, researchContext: "Rev-ErbA agonist studied for metabolism, endurance, and circadian rhythm regulation.", commonDoses: ["20mg", "30mg"] },
+  { name: "SR-9011", category: "sarm", typicalCycleDays: 42, researchContext: "More potent Rev-ErbA agonist than SR-9009, studied for metabolic and endurance effects.", commonDoses: ["20mg", "30mg"] },
   // MEN'S HRT
   { name: "Testosterone Enanthate", category: "mens_hrt", typicalCycleDays: 84, researchContext: "Long-acting testosterone ester used in TRT for hypogonadism.", commonDoses: ["100mg", "200mg", "250mg"] },
   { name: "Testosterone Cypionate", category: "mens_hrt", typicalCycleDays: 84, researchContext: "Long-acting testosterone ester commonly used in US TRT protocols.", commonDoses: ["100mg", "200mg"] },
@@ -48,6 +88,7 @@ export const getCategoryLabel = (category: string): string => {
     case "peptide": return "Peptides";
     case "mens_hrt": return "Men's HRT";
     case "womens_hrt": return "Women's HRT";
+    case "sarm": return "SARMs";
     default: return category;
   }
 };
