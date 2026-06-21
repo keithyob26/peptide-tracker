@@ -120,6 +120,54 @@ function BigRing({ value, max = 10, size = 130, stroke = 11, color }: {
   );
 }
 
+function TrendChart({ data }: { data: { date: string; avg: number }[] }) {
+  if (data.length < 2) return null;
+  const vals = data.map(d => d.avg);
+  const min = Math.max(0, Math.min(...vals) - 1);
+  const max = Math.min(10, Math.max(...vals) + 1);
+  const W = 300, H = 50;
+  const pts = data.map((d, i) => {
+    const x = (i / (data.length - 1)) * W;
+    const y = H - ((d.avg - min) / (max - min)) * H;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+  const latest = vals[vals.length - 1];
+  const first = vals[0];
+  const trend = latest - first;
+  return (
+    <div>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 6 }}>
+        <span style={{ fontSize: 11, color: "#64748B" }}>7-day trend</span>
+        <span style={{ fontSize: 12, fontWeight: 700, color: trend >= 0 ? "#14B8A6" : "#EF4444" }}>
+          {trend >= 0 ? "+" : ""}{trend.toFixed(1)}
+        </span>
+      </div>
+      <svg width="100%" height={H} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+        <defs>
+          <linearGradient id="trendGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#14B8A6" stopOpacity="0.3" />
+            <stop offset="100%" stopColor="#14B8A6" stopOpacity="0" />
+          </linearGradient>
+        </defs>
+        <polygon points={`0,${H} ${pts} ${W},${H}`} fill="url(#trendGrad)" />
+        <polyline points={pts} fill="none" stroke="#14B8A6" strokeWidth="2" strokeLinejoin="round" />
+        {data.map((d, i) => {
+          const x = (i / (data.length - 1)) * W;
+          const y = H - ((d.avg - min) / (max - min)) * H;
+          return <circle key={d.date} cx={x.toFixed(1)} cy={y.toFixed(1)} r="3" fill="#14B8A6" />;
+        })}
+      </svg>
+      <div style={{ display: "flex", justifyContent: "space-between", marginTop: 4 }}>
+        {data.filter((_, i) => i === 0 || i === data.length - 1 || i === Math.floor(data.length / 2)).map(d => (
+          <span key={d.date} style={{ fontSize: 10, color: "#374151" }}>
+            {new Date(d.date).toLocaleDateString("en-IE", { day: "numeric", month: "short" })}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 export default function HomePage() {
   const [activeCycle, setActiveCycle] = useState<Cycle | null>(null);
   const [todayScore, setTodayScore] = useState<FeelScore | null>(null);
@@ -128,6 +176,7 @@ export default function HomePage() {
   const [todayLogs, setTodayLogs] = useState<LogEntry[]>([]);
   const [latestWeight, setLatestWeight] = useState<WeightEntry | null>(null);
   const [streak, setStreak] = useState(0);
+  const [weekTrend, setWeekTrend] = useState<{ date: string; avg: number }[]>([]);
 
   useEffect(() => {
     const today = new Date().toISOString().split("T")[0];
@@ -168,6 +217,19 @@ export default function HomePage() {
       if (localStorage.getItem(k)) s++; else break;
     }
     setStreak(s);
+
+    // Load 7-day feel trend
+    const trend: { date: string; avg: number }[] = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(); d.setDate(d.getDate() - i);
+      const k = `pt_scores_${d.toISOString().split("T")[0]}`;
+      const raw = localStorage.getItem(k);
+      if (raw) {
+        const s = JSON.parse(raw);
+        trend.push({ date: d.toISOString().split("T")[0], avg: Math.round((s.energy + s.sleep + s.mood + s.recovery) / 4 * 10) / 10 });
+      }
+    }
+    setWeekTrend(trend);
   }, []);
 
   const progress = totalDays > 0 ? Math.min(100, (cycleDay / totalDays) * 100) : 0;
@@ -221,6 +283,11 @@ export default function HomePage() {
             )}
           </div>
         </div>
+        {weekTrend.length >= 2 && (
+          <div style={{ marginTop: 14, paddingTop: 14, borderTop: "1px solid rgba(255,255,255,0.05)" }}>
+            <TrendChart data={weekTrend} />
+          </div>
+        )}
       </div>
 
       {/* Active Cycle */}

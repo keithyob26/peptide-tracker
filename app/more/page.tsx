@@ -16,6 +16,7 @@ export default function MorePage() {
   const [clipboardMsg, setClipboardMsg] = useState("");
   const [deleted, setDeleted] = useState(false);
   const [showAIPicker, setShowAIPicker] = useState(false);
+  const [showFallbackText, setShowFallbackText] = useState<string | null>(null);
 
   const exportPDF = async () => {
     const { default: jsPDF } = await import("jspdf");
@@ -75,53 +76,66 @@ export default function MorePage() {
   };
 
   const buildCycleText = () => {
-    const lines: string[] = ["My current peptide/HRT cycle data:"];
-    const cyclesRaw = localStorage.getItem("pt_cycles");
-    if (cyclesRaw) {
-      const cycles = JSON.parse(cyclesRaw);
-      const active = cycles.find((c: { active: boolean }) => c.active);
-      if (active) {
-        lines.push(`\nActive Cycle: ${active.name}`);
-        lines.push(`Compounds: ${active.compounds.join(", ")}`);
-        const start = new Date(active.startDate);
-        const now = new Date();
-        const day = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-        lines.push(`Cycle Day: ${day}`);
+    try {
+      const lines: string[] = ["My current peptide/HRT cycle data:"];
+      const cyclesRaw = localStorage.getItem("pt_cycles");
+      if (cyclesRaw) {
+        const cycles = JSON.parse(cyclesRaw);
+        const active = cycles.find((c: { active: boolean }) => c.active);
+        if (active) {
+          lines.push(`\nActive Cycle: ${active.name}`);
+          lines.push(`Compounds: ${active.compounds.join(", ")}`);
+          const start = new Date(active.startDate);
+          const now = new Date();
+          const day = Math.floor((now.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+          lines.push(`Cycle Day: ${day}`);
+        }
       }
-    }
-    lines.push("\nFeel scores last 7 days:");
-    for (let i = 0; i < 7; i++) {
-      const d = new Date();
-      d.setDate(d.getDate() - i);
-      const key = `pt_scores_${d.toISOString().split("T")[0]}`;
-      const raw = localStorage.getItem(key);
-      if (raw) {
-        const s = JSON.parse(raw);
-        lines.push(`${s.date}: Energy ${s.energy}/10, Sleep ${s.sleep}/10, Mood ${s.mood}/10, Recovery ${s.recovery}/10`);
+      lines.push("\nFeel scores last 7 days:");
+      for (let i = 0; i < 7; i++) {
+        const d = new Date();
+        d.setDate(d.getDate() - i);
+        const key = `pt_scores_${d.toISOString().split("T")[0]}`;
+        const raw = localStorage.getItem(key);
+        if (raw) {
+          const s = JSON.parse(raw);
+          lines.push(`${s.date}: Energy ${s.energy}/10, Sleep ${s.sleep}/10, Mood ${s.mood}/10, Recovery ${s.recovery}/10`);
+        }
       }
-    }
-    const weightsRaw = localStorage.getItem("pt_weights");
-    if (weightsRaw) {
-      const ws = JSON.parse(weightsRaw).slice(-7);
-      if (ws.length) {
-        lines.push("\nWeight log (last 7 entries):");
-        ws.reverse().forEach((w: {date: string; weight: number; unit: string}) => {
-          lines.push(`${w.date}: ${w.weight}${w.unit}`);
-        });
+      const weightsRaw = localStorage.getItem("pt_weights");
+      if (weightsRaw) {
+        const ws = JSON.parse(weightsRaw).slice(-7);
+        if (ws.length) {
+          lines.push("\nWeight log (last 7 entries):");
+          ws.reverse().forEach((w: {date: string; weight: number; unit: string}) => {
+            lines.push(`${w.date}: ${w.weight}${w.unit}`);
+          });
+        }
       }
+      lines.push("\nPlease analyse this data and share research insights. Frame everything as research context only.");
+      if (lines.length <= 1) {
+        return "No cycle data found. Start a cycle in the Tracker tab first.";
+      }
+      return lines.join("\n");
+    } catch {
+      return "No cycle data found. Start a cycle in the Tracker tab first.";
     }
-    lines.push("\nPlease analyse this data and share research insights. Frame everything as research context only.");
-    return lines.join("\n");
   };
 
   const openWithAI = (app: typeof AI_APPS[0]) => {
-    const text = buildCycleText();
-    navigator.clipboard.writeText(text).then(() => {
-      setShowAIPicker(false);
-      setClipboardMsg(`Data copied! ${app.name} opening — paste your data into the chat.`);
-      setTimeout(() => setClipboardMsg(""), 4000);
-      window.open(app.url, "_blank");
-    });
+    try {
+      const text = buildCycleText();
+      navigator.clipboard.writeText(text).then(() => {
+        setShowAIPicker(false);
+        setClipboardMsg(`Data copied! ${app.name} opening — paste your data into the chat.`);
+        setTimeout(() => setClipboardMsg(""), 4000);
+        window.open(app.url, "_blank");
+      }).catch(() => {
+        setShowFallbackText(text);
+      });
+    } catch {
+      setShowFallbackText(buildCycleText());
+    }
   };
 
   const shareNative = () => {
@@ -215,6 +229,41 @@ export default function MorePage() {
         <div style={{ fontSize: 12, marginTop: 4 }}>For research and tracking purposes only. Not medical advice.</div>
         <div style={{ fontSize: 12, marginTop: 2 }}>Powered by irishpeptides.ie</div>
       </div>
+
+      {/* Clipboard Fallback Modal */}
+      {showFallbackText && (
+        <div style={{
+          position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 200,
+          display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          padding: 20
+        }}>
+          <div style={{
+            background: "#1C1C1C", borderRadius: 16, padding: 24, width: "100%", maxWidth: 480,
+            border: "1px solid rgba(255,255,255,0.07)", display: "flex", flexDirection: "column", gap: 16
+          }}>
+            <div style={{ fontSize: 15, fontWeight: 700, color: "#F1F5F9" }}>Copy your data manually</div>
+            <div style={{ fontSize: 13, color: "#64748B" }}>Tap to select all, then copy and paste into your AI app.</div>
+            <label style={{ fontSize: 12, color: "#14B8A6" }}>Tap to select all</label>
+            <textarea
+              readOnly
+              value={showFallbackText}
+              onClick={e => (e.target as HTMLTextAreaElement).select()}
+              style={{
+                width: "100%", minHeight: 160, background: "#161616", color: "#F1F5F9",
+                border: "1px solid rgba(255,255,255,0.1)", borderRadius: 10, padding: 12,
+                fontSize: 12, lineHeight: 1.6, resize: "none", fontFamily: "monospace"
+              }}
+            />
+            <button onClick={() => setShowFallbackText(null)} style={{
+              background: "rgba(20,184,166,0.1)", border: "1px solid rgba(20,184,166,0.3)",
+              borderRadius: 12, padding: "14px", cursor: "pointer", color: "#14B8A6",
+              fontSize: 14, fontWeight: 600, width: "100%"
+            }}>
+              Close
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* AI Picker Modal */}
       {showAIPicker && (

@@ -30,6 +30,41 @@ interface FeelScore {
   date: string;
 }
 
+function WeightChart({ entries }: { entries: WeightEntry[] }) {
+  if (entries.length < 2) return null;
+  const sorted = [...entries].reverse(); // oldest first
+  const vals = sorted.map(e => e.weight);
+  const min = Math.min(...vals) - 1;
+  const max = Math.max(...vals) + 1;
+  const W = 300, H = 70;
+  const pts = sorted.map((e, i) => {
+    const x = (i / (sorted.length - 1)) * W;
+    const y = H - ((e.weight - min) / (max - min)) * H;
+    return `${x.toFixed(1)},${y.toFixed(1)}`;
+  }).join(" ");
+  const latest = sorted[sorted.length - 1];
+  const prev = sorted[sorted.length - 2];
+  const diff = latest && prev ? (latest.weight - prev.weight) : 0;
+  return (
+    <div style={{ marginBottom: 16 }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+        <span style={{ fontSize: 12, color: "#64748B" }}>Last {sorted.length} entries</span>
+        <span style={{ fontSize: 13, fontWeight: 700, color: diff < 0 ? "#14B8A6" : diff > 0 ? "#EF4444" : "#64748B" }}>
+          {diff !== 0 ? (diff > 0 ? "+" : "") + diff.toFixed(1) + " " + latest.unit : "—"}
+        </span>
+      </div>
+      <svg width="100%" height={H} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ overflow: "visible" }}>
+        <polyline points={pts} fill="none" stroke="#14B8A6" strokeWidth="2.5" strokeLinejoin="round" />
+        {sorted.map((e, i) => {
+          const x = (i / (sorted.length - 1)) * W;
+          const y = H - ((e.weight - min) / (max - min)) * H;
+          return <circle key={e.date} cx={x.toFixed(1)} cy={y.toFixed(1)} r="4" fill="#14B8A6" stroke="#1C1C1C" strokeWidth="2" />;
+        })}
+      </svg>
+    </div>
+  );
+}
+
 function LogPageInner() {
   const searchParams = useSearchParams();
   const [tab, setTab] = useState<"dose" | "feel" | "weight">("dose");
@@ -111,6 +146,14 @@ function LogPageInner() {
     setWeightValue("");
     loadWeights();
     setTimeout(() => setWeightSaved(false), 2500);
+  };
+
+  const deleteWeight = (date: string) => {
+    const raw = localStorage.getItem("pt_weights");
+    if (!raw) return;
+    const entries: WeightEntry[] = JSON.parse(raw).filter((w: WeightEntry) => w.date !== date);
+    localStorage.setItem("pt_weights", JSON.stringify(entries));
+    loadWeights();
   };
 
   const scoreLabels = [
@@ -301,6 +344,7 @@ function LogPageInner() {
         {recentWeights.length > 0 && (
           <div className="card" style={{ marginBottom: 14 }}>
             <div style={{ fontSize: 13, color: "#64748B", fontWeight: 600, letterSpacing: "0.06em", marginBottom: 12 }}>RECENT HISTORY</div>
+            <WeightChart entries={recentWeights} />
             {recentWeights.map((w, i) => {
               const prev = recentWeights[i + 1];
               const diff = prev ? (w.weight - prev.weight) : null;
@@ -322,6 +366,10 @@ function LogPageInner() {
                     <span style={{ fontSize: 16, fontWeight: 700, color: i === 0 ? "#F1F5F9" : "#94A3B8" }}>
                       {w.weight} {w.unit}
                     </span>
+                    <button
+                      onClick={() => deleteWeight(w.date)}
+                      style={{ background: "transparent", border: "none", color: "#EF4444", cursor: "pointer", fontSize: 16, padding: "4px 8px", flexShrink: 0 }}
+                    >✕</button>
                   </div>
                 </div>
               );
