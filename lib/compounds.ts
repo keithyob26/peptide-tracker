@@ -1,6 +1,6 @@
 export interface Compound {
   name: string;
-  category: "peptide" | "mens_hrt" | "womens_hrt" | "sarm";
+  category: "peptide" | "mens_hrt" | "womens_hrt" | "sarm" | "stack";
   typicalCycleDays: number;
   researchContext: string;
   commonDoses: string[];
@@ -45,6 +45,16 @@ export const compounds: Compound[] = [
   { name: "Creatine Peptide", category: "peptide", typicalCycleDays: 90, researchContext: "Peptide-bonded creatine studied for improved absorption vs. monohydrate.", commonDoses: ["3g", "5g"] },
   { name: "Abaloparatide", category: "peptide", typicalCycleDays: 90, researchContext: "PTHrP analogue studied for bone density and osteoporosis treatment.", commonDoses: ["80mcg"] },
   { name: "Teriparatide", category: "peptide", typicalCycleDays: 730, researchContext: "PTH(1-34) analogue studied for bone formation and osteoporosis.", commonDoses: ["20mcg"] },
+  { name: "Kisspeptin", category: "peptide", typicalCycleDays: 14, researchContext: "Hypothalamic neuropeptide studied for LH/FSH stimulation, fertility, and libido enhancement.", commonDoses: ["100mcg", "500mcg", "1mg"] },
+  { name: "FOXO4-DRI", category: "peptide", typicalCycleDays: 28, researchContext: "Senolytic peptide studied for selective elimination of senescent cells and longevity.", commonDoses: ["1mg", "2mg", "5mg"] },
+  { name: "SNAP-8 (Acetyl Octapeptide-3)", category: "peptide", typicalCycleDays: 56, researchContext: "Neurocosmetic octapeptide studied for wrinkle reduction by inhibiting muscle contraction signals.", commonDoses: ["0.5mg", "1mg"] },
+  { name: "NAD+", category: "peptide", typicalCycleDays: 90, researchContext: "Essential coenzyme studied for mitochondrial energy, DNA repair, and longevity signalling.", commonDoses: ["250mg", "500mg", "1000mg"] },
+  { name: "LIPO-D", category: "peptide", typicalCycleDays: 30, researchContext: "Lipotropic blend (typically MIC + B12 + D3) studied for fat metabolism and energy support.", commonDoses: ["0.5ml", "1ml"] },
+  { name: "B12 (Methylcobalamin)", category: "peptide", typicalCycleDays: 90, researchContext: "Active B12 form studied for neurological function, energy metabolism, and red blood cell production.", commonDoses: ["500mcg", "1mg", "5mg"] },
+  { name: "AHK-Cu", category: "peptide", typicalCycleDays: 60, researchContext: "Alanine-Histidine-Lysine copper peptide studied for hair follicle stimulation and scalp health.", commonDoses: ["500mcg", "1mg"] },
+  // STACKS
+  { name: "Wolverine Stack (BPC-157 + TB-500 + GHK-Cu + KPV)", category: "stack", typicalCycleDays: 84, researchContext: "Injury recovery stack combining gut/tissue repair (BPC-157), systemic healing (TB-500), skin regen (GHK-Cu), and anti-inflammation (KPV).", commonDoses: ["BPC-157 250mcg + TB-500 2.5mg + GHK-Cu 1mg + KPV 500mcg"] },
+  { name: "KLOW (Glow) Stack (GHK-Cu + KPV + BPC-157 + TB-500)", category: "stack", typicalCycleDays: 60, researchContext: "Skin and gut health stack combining collagen stimulation (GHK-Cu), gut lining repair (KPV + BPC-157), and anti-inflammatory healing (TB-500).", commonDoses: ["GHK-Cu 1mg + KPV 500mcg + BPC-157 250mcg + TB-500 2.5mg"] },
   // SARMs
   { name: "Ostarine (MK-2866)", category: "sarm", typicalCycleDays: 60, researchContext: "First-gen SARM studied for muscle preservation and bone density. Mildest profile.", commonDoses: ["10mg", "15mg", "25mg"] },
   { name: "Ligandrol (LGD-4033)", category: "sarm", typicalCycleDays: 42, researchContext: "Potent SARM studied for lean muscle gain and strength. Significant testosterone suppression.", commonDoses: ["5mg", "10mg"] },
@@ -89,6 +99,7 @@ export const getCategoryLabel = (category: string): string => {
     case "mens_hrt": return "Men's HRT";
     case "womens_hrt": return "Women's HRT";
     case "sarm": return "SARMs";
+    case "stack": return "Stacks";
     default: return category;
   }
 };

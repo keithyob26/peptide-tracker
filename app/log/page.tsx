@@ -10,7 +10,7 @@ interface WeightEntry {
   unit: string;
 }
 
-type Category = "all" | "peptide" | "mens_hrt" | "womens_hrt" | "sarm";
+type Category = "all" | "peptide" | "mens_hrt" | "womens_hrt" | "sarm" | "stack";
 
 interface LogEntry {
   id: string;
@@ -187,7 +187,7 @@ function LogPageInner() {
 
         {/* Category Filter */}
         <div style={{ display: "flex", gap: 5, marginBottom: 12, flexWrap: "wrap" }}>
-          {(["all", "peptide", "mens_hrt", "womens_hrt", "sarm"] as Category[]).map((cat) => (
+          {(["all", "peptide", "sarm", "stack", "mens_hrt", "womens_hrt"] as Category[]).map((cat) => (
             <button
               key={cat}
               onClick={() => setCategory(cat)}
