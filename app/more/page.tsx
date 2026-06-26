@@ -188,11 +188,8 @@ export default function MorePage() {
       {/* Brand */}
       <div className="card" style={{ marginBottom: 16 }}>
         <div style={{ fontSize: 13, color: "#64748B", fontWeight: 500, marginBottom: 12 }}>BRAND</div>
-        <a href="https://irishpeptides.ie" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block", marginBottom: 10 }}>
+        <a href="https://irishpeptides.ie" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
           <button className="btn-secondary">🌿 irishpeptides.ie</button>
-        </a>
-        <a href="https://instagram.com/irishpeptides.ie" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
-          <button className="btn-secondary">📱 @irishpeptides.ie on Instagram</button>
         </a>
       </div>
 
