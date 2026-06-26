@@ -16,7 +16,7 @@ export default function ShopPage() {
           }}>💧</div>
           <div>
             <div style={{ fontSize: 17, fontWeight: 700, color: "#F1F5F9" }}>Hydro Health</div>
-            <div style={{ fontSize: 13, color: "#14B8A6", marginTop: 2 }}>Dublin 5, D05 XE43 — Ships Nationwide</div>
+            <div style={{ fontSize: 13, color: "#14B8A6", marginTop: 2 }}>Ireland — Ships Nationwide</div>
           </div>
         </div>
         <p style={{ fontSize: 14, color: "#94A3B8", lineHeight: 1.65, marginBottom: 14 }}>
