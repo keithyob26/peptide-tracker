@@ -1,0 +1,46 @@
+PLAY STORE CONTENT RATING — RECOMMENDED ANSWERS
+
+App: PepTracker — Research Journal
+Package: ie.irishpeptides.peptracker
+
+CONTENT RATING QUESTIONNAIRE
+
+Q: Does the app contain medical or health content?
+A: Yes — select "Health & Fitness" or "Tools" category.
+   The app is a personal research journal and tracking tool.
+   It does NOT provide diagnosis, treatment, or medical advice.
+   It does NOT connect to any medical devices.
+   It does NOT claim to be a medical device.
+
+Q: Does the app reference controlled substances or drugs?
+A: The app allows users to name compounds they are personally tracking
+   in a research journal. It does not sell, recommend, or promote
+   any substances. All content is user-generated journal entries.
+   Frame as: personal journal / note-taking app with wellness tracking.
+
+Q: Violence / user-generated content / gambling / etc.?
+A: No to all.
+
+Q: Target age group?
+A: 18+ — select "Adults Only" or "Mature 17+" during setup.
+   This reduces review scrutiny from child safety teams.
+
+Q: Location / contacts / camera?
+A: Camera access only — for progress photos stored locally.
+   No location. No contacts. No microphone.
+
+Q: Internet access?
+A: The app itself is a PWA delivered over HTTPS (standard web delivery).
+   No data is transmitted from the app. No APIs called from user data.
+
+CATEGORY RECOMMENDATION
+Primary: Health & Fitness → Personal Journal / Tracker
+Alternative if rejected: Tools → Productivity
+
+REJECTION RISK MITIGATION
+- Never mention specific compound names in store listing
+- Emphasise: journal, tracking, mathematical calculator, on-device
+- Emphasise: "personal research journal" not "protocol guide"
+- Privacy policy URL required: https://irishpeptides.ie/privacy-policy.html
+- Disclaimer included on every page of the app
+- Delete All Data button present (GDPR compliance visible)

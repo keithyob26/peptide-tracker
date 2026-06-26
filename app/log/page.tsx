@@ -84,6 +84,8 @@ function LogPageInner() {
   const [weightUnit, setWeightUnit] = useState("kg");
   const [weightSaved, setWeightSaved] = useState(false);
   const [recentWeights, setRecentWeights] = useState<WeightEntry[]>([]);
+  const [diary, setDiary] = useState("");
+  const [diarySaved, setDiarySaved] = useState(false);
 
   const loadWeights = useCallback(() => {
     const raw = localStorage.getItem("pt_weights");
@@ -96,6 +98,8 @@ function LogPageInner() {
       const parsed: FeelScore = JSON.parse(existing);
       setScores({ energy: parsed.energy, sleep: parsed.sleep, mood: parsed.mood, recovery: parsed.recovery });
     }
+    const existingDiary = localStorage.getItem(`pt_diary_${today}`);
+    if (existingDiary) setDiary(existingDiary);
     loadWeights();
     const t = searchParams.get("tab");
     if (t === "weight") setTab("weight");
@@ -131,8 +135,10 @@ function LogPageInner() {
   const saveScores = () => {
     const data: FeelScore = { ...scores, date: today };
     localStorage.setItem(`pt_scores_${today}`, JSON.stringify(data));
+    if (diary.trim()) localStorage.setItem(`pt_diary_${today}`, diary.trim());
     setScoresSaved(true);
-    setTimeout(() => setScoresSaved(false), 2500);
+    setDiarySaved(true);
+    setTimeout(() => { setScoresSaved(false); setDiarySaved(false); }, 2500);
   };
 
   const saveWeight = () => {
@@ -302,8 +308,20 @@ function LogPageInner() {
           </div>
         ))}
 
+        <div style={{ marginBottom: 20 }}>
+          <label className="label">📝 Daily Notes</label>
+          <textarea
+            className="input"
+            placeholder="How are you feeling today? Notable effects, observations, or anything worth recording..."
+            value={diary}
+            onChange={(e) => setDiary(e.target.value)}
+            rows={3}
+            style={{ resize: "none", minHeight: 80 }}
+          />
+        </div>
+
         <button className="btn-primary" onClick={saveScores}>
-          {scoresSaved ? "✓ Scores Saved!" : "Save Feel Scores"}
+          {scoresSaved ? "✓ Saved!" : "Save Feel Scores & Notes"}
         </button>
       </div>
       )}

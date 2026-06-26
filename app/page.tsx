@@ -298,8 +298,8 @@ export default function HomePage() {
             <span className="badge badge-teal">Day {cycleDay}/{totalDays}</span>
           </div>
           <div style={{ fontSize: 17, fontWeight: 700, marginBottom: 8 }}>{activeCycle.name}</div>
-          <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 6, height: 6, marginBottom: 10 }}>
-            <div style={{ width: `${progress}%`, height: "100%", background: "linear-gradient(90deg,#14B8A6,#0EA5E9)", borderRadius: 6, transition: "width 0.5s" }} />
+          <div style={{ background: "rgba(255,255,255,0.05)", borderRadius: 6, height: 6, marginBottom: 10, overflow: "hidden" }}>
+            <div style={{ width: "100%", height: "100%", background: "linear-gradient(90deg,#14B8A6,#0EA5E9)", borderRadius: 6, transform: `scaleX(${progress / 100})`, transformOrigin: "left", transition: "transform 0.5s" }} />
           </div>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 5 }}>
             {activeCycle.compounds.map((c) => (
@@ -405,6 +405,9 @@ export default function HomePage() {
       </Link>
 
       <DisclaimerBanner />
+      <div style={{ textAlign: "center", fontSize: 12, color: "#374151", padding: "8px 0 4px", lineHeight: 1.5 }}>
+        PepTracker is a personal research journal. It is not a medical device and does not provide medical advice.
+      </div>
     </div>
   );
 }

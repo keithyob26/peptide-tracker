@@ -10,8 +10,8 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Peptide Tracker",
-  description: "Track your peptide and HRT cycles, daily feel scores, and progress photos.",
+  title: "PepTracker — Research Journal",
+  description: "Personal research journal for tracking wellness protocols, daily wellbeing scores, and progress photos.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,

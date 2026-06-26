@@ -191,8 +191,8 @@ export default function MorePage() {
         <a href="https://irishpeptides.ie" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block", marginBottom: 10 }}>
           <button className="btn-secondary">🌿 irishpeptides.ie</button>
         </a>
-        <a href="https://instagram.com/irishwellnessresearch" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
-          <button className="btn-secondary">📱 @irishwellnessresearch on Instagram</button>
+        <a href="https://instagram.com/irishpeptides.ie" target="_blank" rel="noopener noreferrer" style={{ textDecoration: "none", display: "block" }}>
+          <button className="btn-secondary">📱 @irishpeptides.ie on Instagram</button>
         </a>
       </div>
 
@@ -215,9 +215,12 @@ export default function MorePage() {
       {/* Privacy */}
       <div className="card" style={{ marginBottom: 16 }}>
         <div style={{ fontSize: 13, color: "#64748B", fontWeight: 500, marginBottom: 12 }}>PRIVACY</div>
-        <div style={{ fontSize: 14, color: "#94A3B8", lineHeight: 1.6, marginBottom: 16 }}>
+        <div style={{ fontSize: 14, color: "#94A3B8", lineHeight: 1.6, marginBottom: 12 }}>
           🔒 All data stored on your device only. We never see your data.
         </div>
+        <a href="https://irishpeptides.ie/privacy-policy.html" target="_blank" rel="noopener noreferrer" style={{ display: "block", marginBottom: 16, fontSize: 14, color: "#14B8A6", fontWeight: 600, textDecoration: "none" }}>
+          Privacy Policy →
+        </a>
         <button className="btn-danger" onClick={deleteAllData}>
           {deleted ? "✓ All Data Deleted" : "🗑️ Delete All Data"}
         </button>
@@ -225,7 +228,7 @@ export default function MorePage() {
 
       {/* App Info */}
       <div style={{ textAlign: "center", padding: "16px 0", color: "#374151" }}>
-        <div style={{ fontSize: 13 }}>Peptide Tracker v1.0.0</div>
+        <div style={{ fontSize: 13 }}>PepTracker v1.0.0</div>
         <div style={{ fontSize: 12, marginTop: 4 }}>For research and tracking purposes only. Not medical advice.</div>
         <div style={{ fontSize: 12, marginTop: 2 }}>Powered by irishpeptides.ie</div>
       </div>

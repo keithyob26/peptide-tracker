@@ -31,6 +31,9 @@ export default function CalculatorPage() {
     <div className="page">
       <h1 className="section-title">Reconstitution Calculator</h1>
       <DisclaimerBanner />
+      <div style={{ background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 8, padding: "12px 14px", marginBottom: 16, fontSize: 13, color: "#94A3B8", lineHeight: 1.6 }}>
+        This calculator is a mathematical tool only. It does not provide dosing advice or medical guidance. Always consult a qualified healthcare professional before handling any research compounds.
+      </div>
 
       <div className="card" style={{ marginBottom: 20 }}>
         <div style={{ fontSize: 16, fontWeight: 700, marginBottom: 16, color: "#14B8A6" }}>🧮 Calculator</div>

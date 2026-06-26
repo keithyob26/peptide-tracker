@@ -1,0 +1,47 @@
+PepTracker — Research Journal
+
+PepTracker is a private, on-device research journal designed for individuals tracking personal wellness protocols, daily wellbeing metrics, and body composition over time.
+
+FEATURES
+
+Cycle Tracker
+Log and monitor research cycles from start date to end date. Record the compounds in each cycle, set duration, and track your progress day by day with a visual progress indicator. View active cycles at a glance on the home dashboard.
+
+Daily Wellbeing Scores (1–10)
+Log four daily scores — Energy, Sleep Quality, Mood, and Recovery — each rated 1 to 10. View 7-day trend charts. Scores are stored locally and can be exported to any AI app for personal analysis.
+
+Daily Notes / Journal
+Add free-text notes to each day. Record observations, how you feel, or anything relevant to your research.
+
+Reconstitution Calculator
+A mathematical tool that calculates concentration and draw volumes from vial size and water volume inputs. Results include ml draw volume and insulin syringe units. This is a mathematical reference tool only — it does not provide dosing advice.
+
+Weight Log
+Track body weight over time with kg/lbs support. View a 7-day trend chart with entry history.
+
+Progress Photos
+Capture and store progress photos privately on your device.
+
+AI Export
+Copy your cycle data to clipboard and open it directly in ChatGPT, Claude, Gemini, Perplexity, or any AI app for personal research insights.
+
+PDF Export
+Export your full cycle report as a PDF for personal records.
+
+PRIVACY & DATA
+
+All data is stored exclusively on your device. Nothing is ever transmitted, uploaded, or shared. No account required. No sign-up. No cloud sync. Your data never leaves your phone.
+
+To delete all data: More → Delete All Data.
+
+FREE & PRIVATE
+
+PepTracker is completely free. There are no subscriptions, no ads, and no data collection.
+
+DISCLAIMER
+
+PepTracker is a personal research journal and tracking tool. It is not a medical device and does not provide medical advice, dosing recommendations, or treatment guidance. Always consult a qualified healthcare professional before making any changes to your health regimen.
+
+For research and educational purposes only.
+
+Powered by irishpeptides.ie
