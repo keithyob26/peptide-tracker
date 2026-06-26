@@ -3,6 +3,6 @@
   "target": {
     "namespace": "android_app",
     "package_name": "ie.irishpeptides.peptracker",
-    "sha256_cert_fingerprints": ["PLACEHOLDER_REPLACE_DURING_PWABUILDER"]
+    "sha256_cert_fingerprints": ["9F:AA:10:7E:26:DB:63:28:17:B7:57:7C:2B:50:37:48:F7:0A:59:ED:B4:DD:AE:54:20:DC:12:E8:96:E6:68:52"]
   }
 }]
