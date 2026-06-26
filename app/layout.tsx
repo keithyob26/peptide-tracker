@@ -34,7 +34,7 @@ export default function RootLayout({
         <meta name="theme-color" content="#14B8A6" />
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
         <link rel="manifest" href="/manifest.json" />
-        <link rel="apple-touch-icon" href="/icon-192.png" />
+        <link rel="apple-touch-icon" href="/icons/icon-192.png" />
       </head>
       <body className={inter.className} style={{ backgroundColor: "#0F172A", color: "#F1F5F9", minHeight: "100vh" }}>
         <main style={{ paddingBottom: "80px", minHeight: "100vh" }}>
