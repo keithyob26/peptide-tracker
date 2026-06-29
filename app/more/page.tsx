@@ -225,7 +225,7 @@ export default function MorePage() {
 
       {/* App Info */}
       <div style={{ textAlign: "center", padding: "16px 0", color: "#374151" }}>
-        <div style={{ fontSize: 13 }}>PepTracker v1.0.0</div>
+        <div style={{ fontSize: 13 }}>My Peptide Pal v1.0.0</div>
         <div style={{ fontSize: 12, marginTop: 4 }}>For research and tracking purposes only. Not medical advice.</div>
         <div style={{ fontSize: 12, marginTop: 2 }}>Powered by irishpeptides.ie</div>
       </div>

@@ -1,6 +1,6 @@
 PLAY STORE CONTENT RATING — RECOMMENDED ANSWERS
 
-App: PepTracker — Research Journal
+App: My Peptide Pal — Research Journal
 Package: ie.irishpeptides.peptracker
 
 CONTENT RATING QUESTIONNAIRE

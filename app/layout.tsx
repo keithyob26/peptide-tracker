@@ -10,13 +10,13 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "PepTracker — Research Journal",
+  title: "My Peptide Pal — Research Journal",
   description: "Personal research journal for tracking wellness protocols, daily wellbeing scores, and progress photos.",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
     statusBarStyle: "black-translucent",
-    title: "PepTracker",
+    title: "My Peptide Pal",
   },
 };
 

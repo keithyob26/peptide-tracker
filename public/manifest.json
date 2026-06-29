@@ -1,6 +1,6 @@
 {
-  "name": "PepTracker — Research Journal",
-  "short_name": "PepTracker",
+  "name": "My Peptide Pal — Research Journal",
+  "short_name": "My Peptide Pal",
   "description": "Personal research journal for wellness protocols and daily progress tracking.",
   "start_url": "/",
   "display": "standalone",

@@ -7,7 +7,7 @@
 - [ ] Shop page shows Coming Soon
 - [ ] assetlinks.json committed to peptide-tracker (placeholder SHA256)
 - [ ] All disclaimers updated in app
-- [ ] App meta: "PepTracker — Research Journal" in manifest and layout
+- [ ] App meta: "My Peptide Pal — Research Journal" in manifest and layout
 - [ ] Instagram handle updated to @irishpeptides.ie in More page
 - [ ] store-assets/ directory complete (icon, feature graphic, screenshots, descriptions)
 
@@ -28,7 +28,7 @@
 1. Go to https://play.google.com/console
 2. Pay $25 one-time developer registration fee
 3. Create app:
-   - App name: **PepTracker**
+   - App name: **My Peptide Pal**
    - Default language: English (Ireland)
    - App or Game: App
    - Free or Paid: Free
